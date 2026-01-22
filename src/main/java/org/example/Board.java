@@ -47,6 +47,15 @@ public class Board {
         }
         System.out.println();
 
+        for (int j = 0; j < row; j++) {
+            System.out.print(j + " ");
+            for (int i = 0; i < column; i++) {
+                System.out.print(grid[j][i].getSymbol() + " ");
+                final char output =  grid[j][i].getSymbol();
+            }
+            System.out.println();
+        }
+        System.out.println();
 
     }
 
