@@ -23,4 +23,20 @@ public class Board {
         System.out.println("Init vege\n");
     }
 
+    public void setCell(final int row, final int column, final Cell cell) {
+        grid[row][column] = cell;
+    }
+
+    public Cell getCell(final int row, final int column) {
+        return grid[row][column];
+    }
+
+    public boolean isIn(final int row, final int column) {
+        return row >= 0 && row < this.row && column >= 0 && column < this.column;
+    }
+
+    public boolean isEmpty(final int row, final int column) {
+        return grid[row][column] == Cell.EMPTY;
+    }
+
 }
