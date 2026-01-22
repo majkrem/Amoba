@@ -39,4 +39,15 @@ public class Board {
         return grid[row][column] == Cell.EMPTY;
     }
 
+    public void print() {
+        System.out.print("--");
+        for (int i = 0; i < column; i++) {
+            System.out.print((char) ('a' + i) + " ");
+            final char output = (char) ('a' + i);
+        }
+        System.out.println();
+
+
+    }
+
 }
