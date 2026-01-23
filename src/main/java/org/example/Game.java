@@ -94,4 +94,35 @@ public class Game {
         return false;
     }
 
+    private boolean checkWin(final Cell symbol) {
+        final int[][] dirs = {
+                {1, 0}, {0, 1}, {1, 1}, {1, -1}
+        };
+
+        for (int r = 0; r < 10; r++) {
+            for (int c = 0; c < 10; c++) {
+                if (board.getCell(r, c) == symbol) {
+                    for (final int[] d : dirs) {
+                        if (count(symbol, r, c, d[0], d[1]) >= 5) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    private int count(final Cell symbol, final int newRow, final int newColumn, final int dirRow, final int dirColumn) {
+        int cnt = 0;
+        int rowProcess = newRow;
+        int columnProcess = newColumn;
+        while (board.isIn(rowProcess, columnProcess) && board.getCell(rowProcess, columnProcess) == symbol) {
+            cnt++;
+            rowProcess = newRow + dirRow;
+            columnProcess = newColumn + dirColumn;
+        }
+        return cnt;
+    }
+
 }
