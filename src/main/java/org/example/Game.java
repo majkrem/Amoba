@@ -125,4 +125,8 @@ public class Game {
         return cnt;
     }
 
+    private void switchPlayer() {
+        currentPlayer = (currentPlayer == human) ? computer : human;
+    }
+
 }
