@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 
 public class GameRules {
 
-    private Board board;
+    private final Board board;
     private final Player human;
     private final Player computer;
     private Player currentPlayer;
