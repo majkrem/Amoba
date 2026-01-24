@@ -6,7 +6,7 @@ import java.util.Random;
 import java.util.Scanner;
 
 import org.game.amoba.io.FileRead;
-import org.game.amoba.io.FileWriter;
+import org.game.amoba.io.FileWrite;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 
 public class GameRules {
 
-    private final Board board;
+    private Board board;
     private final Player human;
     private final Player computer;
     private Player currentPlayer;
@@ -59,7 +59,8 @@ public class GameRules {
     }
 
     private void humanMove(final Scanner scanner) {
-        while (true) {
+        boolean moveMade = false;
+        while (!moveMade) {
             // System.out.println("Lepes (p1. b3): ");
             LOGGER.info("Lepes (p1, b3 | save | load): ");
             String input = scanner.nextLine();
@@ -67,29 +68,33 @@ public class GameRules {
 
             if ("save".equals(input)) {
                 saveGame();
-                return;
+                moveMade = true;
             }
             if ("load".equals(input)) {
                 loadGame();
+                board.print();
+                LOGGER.info("Lepes (p3, b1 | save | load): ");
                 input = scanner.nextLine();
                 LOGGER.info("{}\n", input);
             }
 
             // System.out.println("Human move\n");
 
-            final int humanColumn = input.charAt(0) - 'a';
-            final int humanRow = Integer.parseInt(input.substring(1)) - 1;
+            if (!moveMade) {
+                final int humanColumn = input.charAt(0) - 'a';
+                final int humanRow = Integer.parseInt(input.substring(1)) - 1;
 
-            if (isValidMove(humanRow, humanColumn)) {
-                board.setCell(humanRow, humanColumn, Cell.PLAYERX);
-                // System.out.println("Human lepett\n");
-                final char humanRowOutput = (char) ('a' + humanRow);
-                final int humanColumnOutput = humanColumn + 1;
-                LOGGER.info("Ember lepett: {}{}\n", humanRowOutput, humanColumnOutput);
-                return;
+                if (isValidMove(humanRow, humanColumn)) {
+                    board.setCell(humanRow, humanColumn, Cell.PLAYERX);
+                    // System.out.println("Human lepett\n");
+                    final char humanRowOutput = (char) ('a' + humanRow);
+                    final int humanColumnOutput = humanColumn + 1;
+                    LOGGER.info("Ember lepett: {}{}\n", humanRowOutput, humanColumnOutput);
+                    moveMade = true;
+                }
+                // System.out.println("Ervenytelen lepes!");
+                LOGGER.info("Ervenytelen lepes!\n");
             }
-            // System.out.println("Ervenytelen lepes!");
-            LOGGER.info("Ervenytelen lepes!\n");
         }
     }
 
@@ -112,29 +117,29 @@ public class GameRules {
     }
 
     private boolean isValidMove(final int row, final int column) {
-        if (!board.isIn(row, column) || !board.isEmpty(row, column)) {
-            return false;
-        }
-        // System.out.println("IsvalidMove\n");
+        boolean isValid = false;
 
-        for (int rr = -1; rr <= 1; rr++) {
-            for (int cc = -1; cc <= 1; cc++) {
-                // System.out.println(rr + " -- " + cc + "\n");
-                if (rr == 0 && cc == 0) {
-                    continue;
+        if (board.isIn(row, column) && board.isEmpty(row, column)) {
+            for (int rr = -1; rr <= 1; rr++) {
+                for (int cc = -1; cc <= 1; cc++) {
+                    if (rr == 0 && cc == 0) {
+                        continue;
+                    }
+                    final int newR = row + rr;
+                    final int newC = column + cc;
+                    // System.out.println(rr + "  - " + cc + "\n");
+                    if (board.isIn(newR, newC) && !board.isEmpty(newR, newC)) {
+                        // System.out.println("Yes\n");
+                        isValid = true;
+                        break;
+                    }
                 }
-                final int newR = row + rr;
-                final int newC = column + cc;
-                // System.out.println(rr + "  - " + cc + "\n");
-                if (board.isIn(newR, newC) && !board.isEmpty(newR, newC)) {
-                    // System.out.println("Yes\n");
-                    return true;
+                if (isValid) {
+                    break;
                 }
-
             }
         }
-        // System.out.println("No\n");
-        return false;
+        return isValid;
     }
 
     private boolean checkWin(final Cell symbol) {
@@ -142,19 +147,20 @@ public class GameRules {
                 {1, 0}, {0, 1}, {1, 1}, {1, -1}
         };
 
+        boolean won = false;
         for (int r = 0; r < boardRow(); r++) {
             for (int c = 0; c < boardColumn(); c++) {
                 // System.out.println(r + " " + c + "\n");
                 if (board.getCell(r, c) == symbol) {
                     for (final int[] d : dirs) {
                         if (count(symbol, r, c, d[0], d[1]) >= 5) {
-                            return true;
+                            won = true;
                         }
                     }
                 }
             }
         }
-        return false;
+        return won;
     }
 
     private int count(final Cell symbol, final int newRow, final int newColumn, final int dirRow, final int dirColumn) {
@@ -175,7 +181,7 @@ public class GameRules {
 
     private void saveGame() {
         try {
-            final FileWriter writer = new FileWriter();
+            final FileWrite writer = new FileWrite();
             writer.write(board, Path.of("board.txt"), currentPlayer.getSymbol().getSymbol());
             LOGGER.info("Jatek elmentve\n");
         } catch (IOException e) {
@@ -187,9 +193,13 @@ public class GameRules {
         try {
             // Board newBoard = new Board(boardRow(), boardColumn());
             final FileRead read = new FileRead();
-            Cell[][] loadedBoard = read.readBoardAsCells("board.txt");
+            final Cell[][] loadedBoard = read.readBoardAsCells("board.txt");
 
-            board.setBoard(loadedBoard);
+            for (int i = 0; i < boardRow(); i++) {
+                for (int j = 0; j < boardColumn(); j++) {
+                    board.setCell(i, j, loadedBoard[i][j]);
+                }
+            }
             LOGGER.info("Jatek betoltve\n");
         } catch (IOException e) {
             LOGGER.error("Olvasasi hiba ", e);

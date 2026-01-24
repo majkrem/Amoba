@@ -5,24 +5,30 @@ import java.io.FileReader;
 import java.io.IOException;
 
 import org.game.amoba.Cell;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class FileRead {
 
-    private static final int SIZE = 10;
+    private static final Logger LOGGER =
+            LoggerFactory.getLogger(FileRead.class);
 
-    public Cell[][] readBoardAsCells(String filename) throws IOException {
-        Cell[][] board = new Cell[SIZE][SIZE];
+    public FileRead() {
+        LOGGER.debug("FileWrite inicializálva");
+    }
 
-        try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
-            for (int i = 0; i < SIZE; i++) {
-                String line = br.readLine();
+    public Cell[][] readBoardAsCells(final String filename) throws IOException {
+        final Cell[][] board = new Cell[10][10];
+
+        try (BufferedReader buffer = new BufferedReader(new FileReader(filename))) {
+            for (int i = 0; i < 10; i++) {
+                final String line = buffer.readLine();
                 if (line == null) {
-                    throw new IOException("A fájl túl rövid, nem tartalmaz " + SIZE + " sort!");
+                    throw new IOException("A fájl túl rövid, nem tartalmaz " + 10 + " sort!");
                 }
-                for (int j = 0; j < SIZE; j++) {
-                    char c = line.charAt(j);
-                    System.out.print(c + " ");
-                    switch (c) {
+                for (int j = 0; j < 10; j++) {
+                    final char character = line.charAt(j);
+                    switch (character) {
                         case 'X':
                             board[i][j] = Cell.PLAYERX;
                             break;
@@ -35,7 +41,6 @@ public class FileRead {
                     }
 
                 }
-                System.out.println();
             }
         }
         return board;

@@ -80,17 +80,4 @@ public class Board {
     public int getColumn() {
         return this.column;
     }
-
-    public Cell[][] getBoard() {
-        return this.grid;
-    }
-
-    public void setBoard(Cell[][] board) {
-        for (int i = 0; i < row; i++) {
-            for (int j = 0; j < column; j++) {
-                this.grid[i][j] = board[i][j];
-            }
-        }
-    }
-
 }

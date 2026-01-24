@@ -10,13 +10,13 @@ import org.game.amoba.Cell;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class FileWriter {
+public class FileWrite {
 
     private static final Logger LOGGER =
-            LoggerFactory.getLogger(FileWriter.class);
+            LoggerFactory.getLogger(FileWrite.class);
 
-    public FileWriter() {
-        LOGGER.debug("BoardFileWriter inicializálva");
+    public FileWrite() {
+        LOGGER.debug("FileWrite inicializálva");
     }
 
     public void write(final Board board, final Path path, final char turn) throws IOException {
