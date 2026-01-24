@@ -207,11 +207,11 @@ public class GameRules {
     }
 
     private int boardRow() {
-        return 10;
+        return board.getRow();
     }
 
     private int boardColumn() {
-        return 10;
+        return board.getColumn();
     }
 
 }
