@@ -19,15 +19,15 @@ public class Board {
     }
 
     private void init() {
-        System.out.println("Init\n");
-        // LOGGER.info("Init\n");
+        // System.out.println("Init\n");
+        LOGGER.info("Init\n");
         for (int i = 0; i < row; i++) {
             for (int j = 0; j < column; j++) {
                 grid[i][j] = Cell.EMPTY;
             }
         }
-        System.out.println("Init vege\n");
-        // LOGGER.info("Init vege\n");
+        // System.out.println("Init vege\n");
+        LOGGER.info("Init vege\n");
     }
 
     public void setCell(final int row, final int column, final Cell cell) {
@@ -47,29 +47,38 @@ public class Board {
     }
 
     public void print() {
-        System.out.print("--");
-        // LOGGER.info("--");
+        // System.out.print("--");
+        LOGGER.info("--");
         for (int i = 0; i < column; i++) {
-            System.out.print((char) ('a' + i) + " ");
-            // final char output = (char) ('a' + i);
-            // LOGGER.info("{} ", output);
+            // System.out.print((char) ('a' + i) + " ");
+            final char output = (char) ('a' + i);
+            LOGGER.info("{} ", output);
         }
-        System.out.println();
-        // LOGGER.info("\n");
+        // System.out.println();
+        LOGGER.info("\n");
 
         for (int j = 0; j < row; j++) {
-            System.out.print((j + 1) + " ");
-            // LOGGER.info("{} ", j);
+            // System.out.print((j + 1) + " ");
+            final int rowNumber = j + 1;
+            LOGGER.info("{} ", rowNumber);
             for (int i = 0; i < column; i++) {
-                System.out.print(grid[j][i].getSymbol() + " ");
-                // final char output =  grid[j][i].getSymbol();
-                // LOGGER.info("{} ", output);
+                // System.out.print(grid[j][i].getSymbol() + " ");
+                final char output =  grid[j][i].getSymbol();
+                LOGGER.info("{} ", output);
             }
-            System.out.println();
-            // LOGGER.info("\n");
+            // System.out.println();
+            LOGGER.info("\n");
         }
-        System.out.println();
-        // LOGGER.info("\n");
+        // System.out.println();
+        LOGGER.info("\n");
+    }
+
+    public int getRow() {
+        return this.row;
+    }
+
+    public int getColumn() {
+        return this.column;
     }
 
 }

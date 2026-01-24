@@ -1,7 +1,13 @@
 package org.game.amoba;
 
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Random;
 import java.util.Scanner;
+
+import org.game.amoba.io.FileWriter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class GameRules {
 
@@ -9,6 +15,7 @@ public class GameRules {
     private final Player human;
     private final Player computer;
     private Player currentPlayer;
+    private static final Logger LOGGER = LoggerFactory.getLogger(GameRules.class);
 
     public GameRules(final int row, final int column) {
         board = new Board(row, column);
@@ -37,7 +44,9 @@ public class GameRules {
             // System.out.println("check win\n");
             if (checkWin(currentPlayer.getSymbol())) {
                 board.print();
-                System.out.println(currentPlayer.getName() + " nyert!");
+                // System.out.println(currentPlayer.getName() + " nyert!");
+                final String output = currentPlayer.getName();
+                LOGGER.info("{} nyert!\n", output);
                 break;
             }
             // System.out.println("after check win\n");
@@ -48,8 +57,15 @@ public class GameRules {
 
     private void humanMove(final Scanner scanner) {
         while (true) {
-            System.out.println("Lepes (p1. b3): ");
+            // System.out.println("Lepes (p1. b3): ");
+            LOGGER.info("Lepes (p1, b3 | save): ");
             final String input = scanner.nextLine();
+            LOGGER.info("{}\n", input);
+
+            if ("save".equals(input)) {
+                saveGame();
+                return;
+            }
 
             // System.out.println("Human move\n");
 
@@ -59,9 +75,13 @@ public class GameRules {
             if (isValidMove(humanRow, humanColumn)) {
                 board.setCell(humanRow, humanColumn, Cell.PLAYERX);
                 // System.out.println("Human lepett\n");
+                final char humanRowOutput = (char) ('a' + humanRow);
+                final int humanColumnOutput = humanColumn + 1;
+                LOGGER.info("Ember lepett: {}{}\n", humanRowOutput, humanColumnOutput);
                 return;
             }
-            System.out.println("Ervenytelen lepes!");
+            // System.out.println("Ervenytelen lepes!");
+            LOGGER.info("Ervenytelen lepes!\n");
         }
     }
 
@@ -77,9 +97,10 @@ public class GameRules {
         } while (!isValidMove(computerR, computerC));
 
         board.setCell(computerR, computerC, Cell.PLAYERO);
-        System.out.println("Gep letett: " + (char) ('a' + computerC) + (computerR + 1));
-        // inal char outputC = (char) ('a' + computerC);
-        // final int outputR = computerR + 1;
+        // System.out.println("Gep letett: " + (char) ('a' + computerC) + (computerR + 1));
+        final char outputC = (char) ('a' + computerC);
+        final int outputR = computerR + 1;
+        LOGGER.info("Gep letett: {}{}\n", outputC, outputR);
     }
 
     private boolean isValidMove(final int row, final int column) {
@@ -142,6 +163,16 @@ public class GameRules {
 
     private void switchPlayer() {
         currentPlayer = (currentPlayer == human) ? computer : human;
+    }
+
+    private void saveGame() {
+        try {
+            FileWriter writer = new FileWriter();
+            writer.write(board, Path.of("board.txt"), currentPlayer.getSymbol().getSymbol());
+            LOGGER.info("Jatek elmentve\n");
+        } catch (IOException e) {
+            LOGGER.error("Mentes hiba: ", e);
+        }
     }
 
     private int boardRow() {
