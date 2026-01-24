@@ -1,10 +1,10 @@
-package org.example;
+package org.game.amoba;
 
 public enum Cell {
 
     EMPTY('.'),
-    X('X'),
-    O('O');
+    PLAYERX('X'),
+    PLAYERO('O');
 
     private final char symbol;
 
@@ -15,4 +15,5 @@ public enum Cell {
     public char getSymbol() {
         return  symbol;
     }
+
 }

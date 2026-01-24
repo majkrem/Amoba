@@ -1,4 +1,4 @@
-package org.example;
+package org.game.amoba;
 
 public class Player {
 
@@ -17,4 +17,5 @@ public class Player {
     public Cell getSymbol() {
         return symbol;
     }
+
 }
