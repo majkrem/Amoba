@@ -5,9 +5,12 @@ import java.nio.file.Path;
 import java.util.Random;
 import java.util.Scanner;
 
+import org.game.amoba.io.FileRead;
 import org.game.amoba.io.FileWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+
 
 public class GameRules {
 
@@ -58,13 +61,18 @@ public class GameRules {
     private void humanMove(final Scanner scanner) {
         while (true) {
             // System.out.println("Lepes (p1. b3): ");
-            LOGGER.info("Lepes (p1, b3 | save): ");
-            final String input = scanner.nextLine();
+            LOGGER.info("Lepes (p1, b3 | save | load): ");
+            String input = scanner.nextLine();
             LOGGER.info("{}\n", input);
 
             if ("save".equals(input)) {
                 saveGame();
                 return;
+            }
+            if ("load".equals(input)) {
+                loadGame();
+                input = scanner.nextLine();
+                LOGGER.info("{}\n", input);
             }
 
             // System.out.println("Human move\n");
@@ -167,11 +175,24 @@ public class GameRules {
 
     private void saveGame() {
         try {
-            FileWriter writer = new FileWriter();
+            final FileWriter writer = new FileWriter();
             writer.write(board, Path.of("board.txt"), currentPlayer.getSymbol().getSymbol());
             LOGGER.info("Jatek elmentve\n");
         } catch (IOException e) {
             LOGGER.error("Mentes hiba: ", e);
+        }
+    }
+
+    private void loadGame() {
+        try {
+            // Board newBoard = new Board(boardRow(), boardColumn());
+            final FileRead read = new FileRead();
+            Cell[][] loadedBoard = read.readBoardAsCells("board.txt");
+
+            board.setBoard(loadedBoard);
+            LOGGER.info("Jatek betoltve\n");
+        } catch (IOException e) {
+            LOGGER.error("Olvasasi hiba ", e);
         }
     }
 

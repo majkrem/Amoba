@@ -1,13 +1,12 @@
 package org.game.amoba.io;
 
-import org.game.amoba.Board;
-import org.game.amoba.Cell;
-
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import org.game.amoba.Board;
+import org.game.amoba.Cell;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,7 +15,11 @@ public class FileWriter {
     private static final Logger LOGGER =
             LoggerFactory.getLogger(FileWriter.class);
 
-    public void write(Board board, Path path, final char turn) throws IOException {
+    public FileWriter() {
+        LOGGER.debug("BoardFileWriter inicializálva");
+    }
+
+    public void write(final Board board, final Path path, final char turn) throws IOException {
         LOGGER.info("Pálya mentése ide: {}\n", path);
 
         try (BufferedWriter writer = Files.newBufferedWriter(path)) {
@@ -27,23 +30,23 @@ public class FileWriter {
         }
     }
 
-    private void writeRow(Board board, BufferedWriter writer, int row)
+    private void writeRow(final Board board, final BufferedWriter writer, final int row)
             throws IOException {
 
         for (int col = 0; col < board.getColumn(); col++) {
-            Cell cell = board.getCell(row, col);
+            final Cell cell = board.getCell(row, col);
             writer.write(cellToChar(cell));
-            writer.write(' ');
+            // writer.write(' ');
         }
         writer.newLine();
     }
 
-    private void writeTurn(BufferedWriter writer,final char turn) throws IOException {
+    private void writeTurn(final BufferedWriter writer, final char turn) throws IOException {
         writer.write(turn);
         writer.newLine();
     }
 
-    private char cellToChar(Cell cell) {
+    private char cellToChar(final Cell cell) {
         return switch (cell) {
             case PLAYERX -> 'X';
             case PLAYERO -> 'O';
